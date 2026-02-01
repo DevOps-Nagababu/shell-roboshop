@@ -34,7 +34,7 @@ VALIDATE $? "Disabled Nodejs Module"
 dnf module enable nodejs:20 -y &>>$LOG_FILE
 VALIDATE $? "Enableing nodjs module"
 
-dnf install nodejs -y $>>$LOG_FILE
+dnf install nodejs -y &>>$LOG_FILE
 VALIDATE $? "Installing nodejs"
 
 id roboshop &>>$LOG_FILE
@@ -44,7 +44,7 @@ if [ $? -ne 0 ]; then
 else
     echo -e "ROBOSHOP user alread exist ..$Y SKIPPING"
 
-mkdir -p /app $>>$LOG_FILE
+mkdir -p /app &>>$LOG_FILE
 VALIDATE $? "Making the app folder"
 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip  $>>$LOG_FILE
