@@ -48,46 +48,49 @@ mkdir -p /app $>>$LOG_FILE
 VALIDATE $? "Making the app folder"
 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip  $>>$LOG_FILE
-cd /app $>>$LOG_FILE
-unzip /tmp/catalogue.zip $>>$LOG_FILE
-VALIDATE $? "Copying code to app direcotry"
+VALIDATE $? "Downloading the code from git"
 
-cd /app  $>>$LOG_FILE
-VALIDATE $? "Moving to app directory"
 
-rm -rf /app/*
-VALIDATE $? "Removing the default code from app directory"
+# cd /app $>>$LOG_FILE
+# unzip /tmp/catalogue.zip $>>$LOG_FILE
+# VALIDATE $? "Copying code to app direcotry"
 
-unzip /tmp/catalogue.zip &>>$LOG_FILE
-VALIDATE $? "Uzip catalogue code"
+# cd /app  $>>$LOG_FILE
+# VALIDATE $? "Moving to app directory"
 
-npm install $>>$LOG_FILE
-VALIDATE $? "Installing node moudles"
+# rm -rf /app/*
+# VALIDATE $? "Removing the default code from app directory"
 
-cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
-VALIDATE $? "Created systemctl service"
+# unzip /tmp/catalogue.zip &>>$LOG_FILE
+# VALIDATE $? "Uzip catalogue code"
 
-systemctl daemon-reload $>>$LOG_FILE
-VALIDATE $? "Restarting the deamon"
+# npm install $>>$LOG_FILE
+# VALIDATE $? "Installing node moudles"
 
-systemctl enable catalogue $>>$LOG_FILE
-VALIDATE $? "Enableing the catalogue"
+# cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
+# VALIDATE $? "Created systemctl service"
 
-systemctl start catalogue $>>$LOG_FILE
-VALIDATE $? "Starting the catalogue"
+# systemctl daemon-reload $>>$LOG_FILE
+# VALIDATE $? "Restarting the deamon"
 
-cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
-dnf install mongodb-mongosh -y &>>$LOG_FILE
+# systemctl enable catalogue $>>$LOG_FILE
+# VALIDATE $? "Enableing the catalogue"
 
-INDEX=$(mongosh --host $MONGODB_HOST --quiet  --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
+# systemctl start catalogue $>>$LOG_FILE
+# VALIDATE $? "Starting the catalogue"
 
-if [ $INDEX -le 0 ]; then
-    mongosh --host $MONGODB_HOST </app/db/master-data.js
-    VALIDATE $? "Loading products"
-else
-    echo -e "Products already loaded ... $Y SKIPPING $N"
-fi
+# cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
+# dnf install mongodb-mongosh -y &>>$LOG_FILE
 
-systemctl restart catalogue
-VALIDATE $? "Restarting catalogue"
+# INDEX=$(mongosh --host $MONGODB_HOST --quiet  --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
+
+# if [ $INDEX -le 0 ]; then
+#     mongosh --host $MONGODB_HOST </app/db/master-data.js
+#     VALIDATE $? "Loading products"
+# else
+#     echo -e "Products already loaded ... $Y SKIPPING $N"
+# fi
+
+# systemctl restart catalogue
+# VALIDATE $? "Restarting catalogue"
 
