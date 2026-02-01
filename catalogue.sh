@@ -3,7 +3,7 @@
 USERID=$(id -u)
 LOG_FOLDER="/var/log/shell_script/"
 LOG_FILE="$LOG_FOLDER/$0.log"
-SCRIPT_DIR=$$PWD
+# SCRIPT_DIR=$$PWD
 MONGODB_HOST=mongodb.nagababu.online
 
 R="\e[31m"
