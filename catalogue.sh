@@ -3,7 +3,7 @@
 USERID=$(id -u)
 LOG_FOLDER="/var/log/shell_script/"
 LOG_FILE="$LOG_FOLDER/$0.log"
-# SCRIPT_DIR=$$PWD
+SCRIPT_DIR=$PWD
 MONGODB_HOST=mongodb.nagababu.online
 
 R="\e[31m"
@@ -42,7 +42,7 @@ if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
     VALIDATE $? "System useradded"
 else
-    echo -e "ROBOSHOP user alread exist ..$Y SKIPPING"
+    echo -e "ROBOSHOP user alread exist ..$Y SKIPPING $N"
 fi
 
 mkdir -p /app &>>$LOG_FILE
@@ -52,11 +52,13 @@ curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue
 VALIDATE $? "Downloading the code from git"
 
 
-# cd /app $>>$LOG_FILE
-# unzip /tmp/catalogue.zip $>>$LOG_FILE
-# VALIDATE $? "Copying code to app direcotry"
+cd /app &>>$LOG_FILE
+VALIDATE $? "Chanding directory to app folder"
 
-# cd /app  $>>$LOG_FILE
+unzip /tmp/catalogue.zip &>>$LOG_FILE
+VALIDATE $? "Unziping the Catalogue.zip folder"
+
+# cd /app  &>>$LOG_FILE
 # VALIDATE $? "Moving to app directory"
 
 # rm -rf /app/*
@@ -65,20 +67,20 @@ VALIDATE $? "Downloading the code from git"
 # unzip /tmp/catalogue.zip &>>$LOG_FILE
 # VALIDATE $? "Uzip catalogue code"
 
-# npm install $>>$LOG_FILE
-# VALIDATE $? "Installing node moudles"
+npm install &>>$LOG_FILE
+VALIDATE $? "Installing node moudles"
 
-# cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
-# VALIDATE $? "Created systemctl service"
+cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
+VALIDATE $? "Created systemctl service"
 
-# systemctl daemon-reload $>>$LOG_FILE
-# VALIDATE $? "Restarting the deamon"
+systemctl daemon-reload $>>$LOG_FILE
+VALIDATE $? "Restarting the deamon"
 
-# systemctl enable catalogue $>>$LOG_FILE
-# VALIDATE $? "Enableing the catalogue"
+systemctl enable catalogue $>>$LOG_FILE
+VALIDATE $? "Enableing the catalogue"
 
-# systemctl start catalogue $>>$LOG_FILE
-# VALIDATE $? "Starting the catalogue"
+systemctl start catalogue $>>$LOG_FILE
+VALIDATE $? "Starting the catalogue"
 
 # cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 # dnf install mongodb-mongosh -y &>>$LOG_FILE
