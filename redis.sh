@@ -14,7 +14,7 @@ if [ $USERID -ne 0 ]; then
     exit 1
 fi
 
-mkdir= -p $LOG_FOLDER
+mkdir -p $LOG_FOLDER
 VALIDATE(){
     if [ $1 -ne 0 ]; then
         echo -e "$2....$R FAILD $N" | tee -a $LOG_FILE
