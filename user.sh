@@ -51,6 +51,9 @@ VALIDATE $? "Chanding the directory to app"
 unzip -n /tmp/user.zip &>>$LOG_FILE
 VALIDATE $? "unziping the user.zip code"
 
+cp /home/ec2-user/user.service /etc/systemd/system/user.service &>>$LOG_FILE
+VALIDATE $? "Copied user.service file"
+
 systemctl daemon-reload &>>$LOG_FILE
 VALIDATE $? "Daemon restarting"
 
