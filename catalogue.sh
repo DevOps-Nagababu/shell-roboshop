@@ -63,13 +63,13 @@ VALIDATE $? "Installing node moudles"
 cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
 VALIDATE $? "Created systemctl service"
 
-systemctl daemon-reload $>>$LOG_FILE
+systemctl daemon-reload &>>$LOG_FILE
 VALIDATE $? "Restarting the deamon"
 
-systemctl enable catalogue $>>$LOG_FILE
+systemctl enable catalogue &>>$LOG_FILE
 VALIDATE $? "Enableing the catalogue"
 
-systemctl start catalogue $>>$LOG_FILE
+systemctl start catalogue &>>$LOG_FILE
 VALIDATE $? "Starting the catalogue"
 
 
