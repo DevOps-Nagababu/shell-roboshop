@@ -32,8 +32,13 @@ VALIDATE $? "Enableing Nodejs : 20 Modules"
 dnf install nodejs -y &>>$LOG_FILE
 VALIDATE $? "Installing Nodejs"
 
-useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
-VALIDATE $? "Adding System User"
+id roboshop &>>$LOG_FILE
+if [ $? -ne 0 ]; then
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
+    VALIDATE $? "System useradded"
+else
+    echo -e "ROBOSHOP user alread exist ..$Y SKIPPING $N"
+fi
 
 mkdir -p /app &>>$LOG_FILE
 VALIDATE $? "Making the Directory of APP"
