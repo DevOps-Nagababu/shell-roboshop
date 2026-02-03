@@ -37,7 +37,7 @@ VALIDATE $? "Enableing mongodb"
 systemctl start mongod &>>$LOG_FILE
 VALIDATE $? "Starting mongodb"
 
-sed "s/127.0.0.1/0.0.0.0/g" /etc/mongod.conf &>>$LOG_FILE
+sed -i "s/127.0.0.1/0.0.0.0/g" /etc/mongod.conf &>>$LOG_FILE
 VALIDATE $? "Chaning IP address to 0.0.0.0"
 
 systemctl restart mongod &>>$LOG_FILE
