@@ -51,21 +51,11 @@ VALIDATE $? "Making the app folder"
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip  &>>$LOG_FILE
 VALIDATE $? "Downloading the code from git"
 
-
 cd /app &>>$LOG_FILE
 VALIDATE $? "Chanding directory to app folder"
 
-unzip /tmp/catalogue.zip &>>$LOG_FILE
+unzip -n /tmp/catalogue.zip &>>$LOG_FILE
 VALIDATE $? "Unziping the Catalogue.zip folder"
-
-# cd /app  &>>$LOG_FILE
-# VALIDATE $? "Moving to app directory"
-
-# rm -rf /app/*
-# VALIDATE $? "Removing the default code from app directory"
-
-# unzip /tmp/catalogue.zip &>>$LOG_FILE
-# VALIDATE $? "Uzip catalogue code"
 
 npm install &>>$LOG_FILE
 VALIDATE $? "Installing node moudles"
@@ -82,18 +72,4 @@ VALIDATE $? "Enableing the catalogue"
 systemctl start catalogue $>>$LOG_FILE
 VALIDATE $? "Starting the catalogue"
 
-# cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
-# dnf install mongodb-mongosh -y &>>$LOG_FILE
-
-# INDEX=$(mongosh --host $MONGODB_HOST --quiet  --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
-
-# if [ $INDEX -le 0 ]; then
-#     mongosh --host $MONGODB_HOST </app/db/master-data.js
-#     VALIDATE $? "Loading products"
-# else
-#     echo -e "Products already loaded ... $Y SKIPPING $N"
-# fi
-
-# systemctl restart catalogue
-# VALIDATE $? "Restarting catalogue"
 
