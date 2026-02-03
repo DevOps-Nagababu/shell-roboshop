@@ -56,6 +56,9 @@ cd /app &>>$LOG_FILE
 npm install  &>>$LOG_FILE
 VALIDATE $? "Installing the Node modules"
 
+cp $SCRIPT_DIR/cart.service /etc/systemd/system/cart.service
+VALIDATE $? "Created systemctl service"
+
 systemctl daemon-reload &>>$LOG_FILE
 VALIDATE $? " Restarting the deamon"
 
