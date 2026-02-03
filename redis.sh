@@ -10,7 +10,7 @@ Y="\e[33m"
 N="\e[0m"
 
 if [ $USERID -ne 0 ]; then
-    echo -e "Please login to root ruser" | tee -a $LOG_FILE
+    echo -e "$R Please login to root ruser $N" | tee -a $LOG_FILE
     exit 1
 fi
 
@@ -25,18 +25,17 @@ VALIDATE(){
 }
 
 
-dnf module disable redis -y &>>LOG_FILE
-dnf module enable redis:7 -y &>>LOG_FILE
-
+dnf module disable redis -y &>>$LOG_FILE
+dnf module enable redis:7 -y &>>$LOG_FILE
 VALIDATE $? "Enable redis:7"
 
-dnf install redis -y &>>LOG_FILE
+dnf install redis -y &>>$LOG_FILE
 VALIDATE $? "Installed redis 7"
 
-sed -i -e "s/127.0.0.1/0.0.0.0/g" -e "/protected-mode/ c protected-no" /etc/redis/redis.conf
+sed -i -e "s/127.0.0.1/0.0.0.0/g" -e "/protected-mode/ c protected-mode no" /etc/redis/redis.conf
 VALIDATE $? "Allowing remote connection"
-systemctl enable redis &>>LOG_FILE
+systemctl enable redis &>>$LOG_FILE
 VALIDATE $? "Enabled redis"
 
-systemctl start redis &>>LOG_FILE 
+systemctl start redis &>>$LOG_FILE 
 VALIDATE $? "Started redis"
