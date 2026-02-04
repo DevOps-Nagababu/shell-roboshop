@@ -43,7 +43,7 @@ VALIDATE $? "Downloading code"
 cd /app &>>$LOG_FILE
 VALIDATE $? "Changing the directory"
 
-unzip /tmp/shipping.zip &>>$LOG_FILE
+unzip -n /tmp/shipping.zip &>>$LOG_FILE
 VALIDATE $? "Unzipping the code"
 
 cd /app &>>$LOG_FILE
@@ -55,14 +55,8 @@ VALIDATE $? "Maven clean"
 mv target/shipping-1.0.jar shipping.jar  &>>$LOG_FILE
 VALIDATE $? "Renaming to Shipping.jar"
 
-systemctl daemon-reload &>>$LOG_FILE
-VALIDATE $? "Restarting the Daemon"
-
-systemctl enable shipping &>>$LOG_FILE
-VALIDATE $? "Enableing the shipping service"
-
-systemctl start shipping  &>>$LOG_FILE
-VALIDATE $? "Starting the shipping service"
+cp $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service
+VALIDATE $? "Created systemctl service"
 
 dnf install mysql -y &>>$LOG_FILE
 VALIDATE $? "Installing mysql client"
@@ -76,5 +70,11 @@ VALIDATE $? "Adding mysql app-user"
 mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/master-data.sql &>>$LOG_FILE
 VALIDATE $? "Loading master data to mysql"
 
-systemctl restart shipping &>>$LOG_FILE
-VALIDATE$? "Restarting the shipping service"
+systemctl daemon-reload &>>$LOG_FILE
+VALIDATE $? "Restarting the Daemon"
+
+systemctl enable shipping &>>$LOG_FILE
+VALIDATE $? "Enableing the shipping service"
+
+systemctl start shipping  &>>$LOG_FILE
+VALIDATE $? "Starting the shipping service"
