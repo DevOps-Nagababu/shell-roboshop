@@ -2,6 +2,7 @@ USERID=$(id -u)
 LOG_FOLDER="/var/log/shell_script/"
 LOG_FILE="$LOG_FOLDER/$0.log"
 SCRIPT_DIR=$PWD
+$MYSQL_HOST="mysql.nagababu.online"
 
 R="\e[31m"
 G="\e[32m"
@@ -61,14 +62,19 @@ VALIDATE $? "Created systemctl service"
 dnf install mysql -y &>>$LOG_FILE
 VALIDATE $? "Installing mysql client"
 
-mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/schema.sql  &>>$LOG_FILE
-VALIDATE $? "Mysql Schema creating"
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 -e "use cities"
+if [ $? -ne 0 ]; then
+        mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/schema.sql  &>>$LOG_FILE
+        VALIDATE $? "Mysql Schema creating"
 
-mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/app-user.sql  &>>$LOG_FILE
-VALIDATE $? "Adding mysql app-user"
+        mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/app-user.sql  &>>$LOG_FILE
+        VALIDATE $? "Adding mysql app-user"
 
-mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/master-data.sql &>>$LOG_FILE
-VALIDATE $? "Loading master data to mysql"
+        mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/master-data.sql &>>$LOG_FILE
+        VALIDATE $? "Loading master data to mysql"   
+else    
+        echo -e "data is already loaded ... $Y SKIPPING $N"
+fi           
 
 systemctl daemon-reload &>>$LOG_FILE
 VALIDATE $? "Restarting the Daemon"
