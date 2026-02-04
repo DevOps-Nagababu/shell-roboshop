@@ -23,15 +23,16 @@ VALIDATE(){
     fi
 }
 
-dnf install rabbitmq-server -y
+cp $SCRIPT_DIR/rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo &>>$LOG_FILE
+VALIDATE $? "Added reabbitmq repo"
 
-systemctl enable rabbitmq-server
-systemctl start rabbitmq-server
+dnf install rabbitmq-server -y &>>$LOG_FILE
+VALIDATE $? "Installing rabbitmq server"
 
-id roboshop &>>$LOG_FILE
-if [ $? -ne 0 ]; then
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
-    VALIDATE $? "System useradded"
-else
-    echo -e "ROBOSHOP user alread exist ..$Y SKIPPING $N"
-fi
+systemctl enable rabbitmq-server &>>$LOG_FILE
+systemctl start rabbitmq-server &>>$LOG_FILE
+VALIDATE $? "Enableing and Startign rabbitmq server"
+
+rabbitmqctl add_user roboshop roboshop123
+rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"
+VALIDATE $? "Created user and given permissions"
